@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Para mi bb 🖤</title>
+    <link href="https://fonts.googleapis.com/css2?family=Satisfy&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --gold: #d4af37;
+            --gold-light: #f0d060;
+            --gold-dim: rgba(212,175,55,0.35);
+            --bg: #0a0900;
+            --page-bg: #faf6e8;
+            --text-dark: #2e220a;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg);
+            font-family: 'Lora', serif;
+        }
+
+        #particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .p {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--gold);
+            animation: rise linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes rise {
+            0%   { transform: translateY(105vh); opacity: 0; }
+            8%   { opacity: .55; }
+            92%  { opacity: .25; }
+            100% { transform: translateY(-5vh); opacity: 0; }
+        }
+
+        #intro {
+            position: fixed;
+            inset: 0;
+            z-index: 300;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: opacity 1.2s ease;
+        }
+
+        #intro.hide { opacity: 0; pointer-events: none; }
+
+        .intro-title {
+            font-family: 'Satisfy', cursive;
+            font-size: 2.4rem;
+            color: var(--gold);
+            text-shadow: 0 0 25px rgba(212,175,55,.5);
+            opacity: 0;
+            animation: introAnim 2.6s ease forwards;
+        }
+
+        .intro-sub {
+            font-size: .9rem;
+            letter-spacing: 4px;
+            color: rgba(212,175,55,.45);
+            opacity: 0;
+            animation: introAnim 2.6s ease .25s forwards;
+        }
+
+        @keyframes introAnim {
+            0%   { opacity: 0; transform: scale(.85); }
+            35%  { opacity: 1; }
+            75%  { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(1.07); }
+        }
+
+        #viewer {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity .6s;
+        }
+
+        #viewer.visible { opacity: 1; }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity .55s ease, transform .55s ease;
+            pointer-events: none;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .slide.exit-up {
+            opacity: 0;
+            transform: translateY(-40px);
+        }
+
+        #cover-slide { background: var(--bg); }
+
+        .cover-box {
+            position: relative;
+            width: min(88vw, 360px);
+            padding: 50px 30px 55px;
+            border: 1.5px solid var(--gold-dim);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 0 60px rgba(212,175,55,.08), inset 0 0 40px rgba(0,0,0,.3);
+        }
+
+        .cover-box::before {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            border: .5px solid rgba(212,175,55,.18);
+            border-radius: 3px;
+            pointer-events: none;
+        }
+
+        .cover-corner {
+            position: absolute;
+            font-size: .95rem;
+            color: rgba(212,175,55,.5);
+        }
+
+        .cover-corner.tl { top: 14px; left: 14px; }
+        .cover-corner.tr { top: 14px; right: 14px; transform: scaleX(-1); }
+        .cover-corner.bl { bottom: 14px; left: 14px; transform: scaleY(-1); }
+        .cover-corner.br { bottom: 14px; right: 14px; transform: scale(-1); }
+
+        .cover-title {
+            font-family: 'Satisfy', cursive;
+            font-size: clamp(2.2rem, 10vw, 3rem);
+            color: var(--gold);
+            text-shadow: 0 0 30px rgba(212,175,55,.4);
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .cover-sub {
+            font-size: .75rem;
+            letter-spacing: 5px;
+            color: rgba(212,175,55,.55);
+            text-transform: uppercase;
+        }
+
+        .cover-line {
+            width: 90px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--gold), transparent);
+        }
+
+        .cover-heart { font-size: 2rem; filter: drop-shadow(0 0 8px rgba(212,175,55,.5)); }
+
+        .open-btn {
+            margin-top: 18px;
+            background: transparent;
+            border: 1px solid rgba(212,175,55,.5);
+            color: var(--gold);
+            font-family: 'Lora', serif;
+            font-size: .82rem;
+            letter-spacing: 2px;
+            padding: 11px 28px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all .3s;
+        }
+
+        .open-btn:hover { background: rgba(212,175,55,.12); box-shadow: 0 0 14px rgba(212,175,55,.2); }
+
+        .content-slide {
+            background: var(--bg);
+            padding: 0 16px;
+            width: 100%;
+        }
+
+        .card {
+            position: relative;
+            width: min(92vw, 400px);
+            margin: 0 auto;
+            background: var(--page-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 12px 50px rgba(0,0,0,.55), 0 0 0 1px rgba(212,175,55,.15);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent, transparent 30px,
+                rgba(212,175,55,.06) 30px, rgba(212,175,55,.06) 31px
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .card-photo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .photo-wrap {
+            position: relative;
+            width: 100%;
+        }
+
+        .card-photo img {
+            width: 100%;
+            max-height: 55vh;
+            object-fit: cover;
+            display: block;
+        }
+
+        .photo-wrap::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 80px;
+            background: linear-gradient(to top, var(--page-bg), transparent);
+        }
+
+        .photo-caption {
+            position: relative;
+            z-index: 1;
+            font-family: 'Satisfy', cursive;
+            font-size: clamp(1.1rem, 5vw, 1.45rem);
+            color: #5a3e10;
+            text-align: center;
+            padding: 14px 20px 22px;
+            line-height: 1.4;
+        }
+
+        .photo-caption::before {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--gold), transparent);
+            margin: 0 auto 10px;
+        }
+
+        .card-text {
+            padding: 30px 24px 36px;
+            min-height: min(75vh, 500px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .text-title-el {
+            font-family: 'Satisfy', cursive;
+            font-size: clamp(1.5rem, 6vw, 2rem);
+            color: #b8870d;
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .text-title-line {
+            width: 70px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--gold), transparent);
+            margin: 0 auto 18px;
+        }
+
+        .card-text p {
+            font-size: clamp(.8rem, 3.8vw, .95rem);
+            line-height: 1.9;
+            color: var(--text-dark);
+            text-align: justify;
+            position: relative;
+            z-index: 1;
+        }
+
+        .drop-cap::first-letter {
+            font-family: 'Satisfy', cursive;
+            font-size: 3.4em;
+            float: left;
+            line-height: .72;
+            margin-right: 7px;
+            margin-top: 5px;
+            color: #c9a010;
+        }
+
+        .signature {
+            font-family: 'Satisfy', cursive;
+            font-size: 1.5rem;
+            color: #b8870d;
+            text-align: center;
+            margin-top: 22px;
+        }
+
+        .final-deco {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 1.3rem;
+            filter: drop-shadow(0 0 5px rgba(212,175,55,.4));
+        }
+
+        .sig-line {
+            width: 80px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--gold), transparent);
+            margin: 14px auto 0;
+        }
+
+        .pg-num {
+            position: absolute;
+            bottom: 9px; right: 14px;
+            font-size: .62rem;
+            color: #c0a060;
+            font-style: italic;
+            letter-spacing: 1px;
+            z-index: 2;
+        }
+
+        #arrow-down {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 200;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(212,175,55,.55);
+            background: rgba(10,9,0,.7);
+            backdrop-filter: blur(6px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: opacity .4s, background .3s, box-shadow .3s;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #arrow-down.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        #arrow-down:hover {
+            background: rgba(212,175,55,.18);
+            box-shadow: 0 0 18px rgba(212,175,55,.3);
+        }
+
+        #arrow-down svg {
+            width: 22px;
+            height: 22px;
+            stroke: var(--gold);
+            transition: transform .3s;
+            animation: bounce 1.8s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50%       { transform: translateY(5px); }
+        }
+
+        #arrow-down.up svg {
+            transform: rotate(180deg);
+            animation: none;
+        }
+
+        #progress {
+            position: fixed;
+            top: 0; left: 0;
+            height: 2.5px;
+            background: linear-gradient(to right, #c9a010, var(--gold-light));
+            z-index: 200;
+            transition: width .5s ease;
+            box-shadow: 0 0 8px rgba(212,175,55,.5);
+        }
+
+        #counter {
+            position: fixed;
+            top: 10px;
+            right: 14px;
+            z-index: 200;
+            font-size: .68rem;
+            color: rgba(212,175,55,.45);
+            letter-spacing: 1px;
+            font-style: italic;
+            opacity: 0;
+            transition: opacity .4s;
+        }
+
+        #counter.visible { opacity: 1; }
+
+        #final-slide { background: var(--bg); }
+
+        .final-box {
+            position: relative;
+            width: min(88vw, 340px);
+            padding: 48px 28px 52px;
+            border: 1.5px solid var(--gold-dim);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            text-align: center;
+        }
+
+        .final-box::before {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            border: .5px solid rgba(212,175,55,.15);
+            border-radius: 3px;
+        }
+
+        .final-box h2 {
+            font-family: 'Satisfy', cursive;
+            font-size: 2.3rem;
+            color: var(--gold);
+            text-shadow: 0 0 25px rgba(212,175,55,.4);
+        }
+
+        .final-box p {
+            font-style: italic;
+            font-size: .9rem;
+            color: rgba(212,175,55,.55);
+            letter-spacing: 1px;
+        }
+
+        .final-box .big-heart {
+            font-size: 3rem;
+            filter: drop-shadow(0 0 12px rgba(212,175,55,.5));
+            animation: heartbeat 1.5s ease infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50%       { transform: scale(1.12); }
+        }
+
+        .restart-btn {
+            margin-top: 6px;
+            background: transparent;
+            border: 1px solid rgba(212,175,55,.4);
+            color: rgba(212,175,55,.7);
+            font-family: 'Lora', serif;
+            font-size: .78rem;
+            letter-spacing: 2px;
+            padding: 9px 22px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all .3s;
+        }
+
+        .restart-btn:hover { background: rgba(212,175,55,.1); }
+    </style>
+</head>
+<body>
+
+<div id="particles"></div>
+<div id="progress" style="width:0%"></div>
+<div id="counter"></div>
+
+<div id="intro">
+    <p class="intro-title">Para mi bb ✨</p>
+    <p class="intro-sub">con todo mi amor</p>
+</div>
+
+<div id="viewer">
+
+    <div class="slide active" id="cover-slide" data-index="0">
+        <div class="cover-box">
+            <span class="cover-corner tl">✦</span>
+            <span class="cover-corner tr">✦</span>
+            <span class="cover-corner bl">✦</span>
+            <span class="cover-corner br">✦</span>
+            <h1 class="cover-title">Para<br>mi bb</h1>
+            <p class="cover-sub">Hoy y siempre</p>
+            <div class="cover-line"></div>
+            <span class="cover-heart">🖤</span>
+            <button class="open-btn" id="openBtn">Abrir ✨</button>
+        </div>
+    </div>
+
+    <div id="pages"></div>
+
+    <div class="slide" id="final-slide">
+        <div class="final-box">
+            <span class="cover-corner tl">✦</span>
+            <span class="cover-corner tr">✦</span>
+            <span class="cover-corner bl">✦</span>
+            <span class="cover-corner br">✦</span>
+            <span class="big-heart">🖤</span>
+            <h2>Te amo,<br>mi bb</h2>
+            <div class="cover-line"></div>
+            <p>ahora y para siempre</p>
+            <button class="restart-btn" id="restartBtn">↑ Volver al inicio</button>
+        </div>
+    </div>
+
+</div>
+
+<div id="arrow-down">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+</div>
+
+<script>
+const pages = [
+    { type:'photo', img:'foto 1.jpeg',  caption:'No sé que me viste, la verdad' },
+    { type:'photo', img:'foto 2.jpeg',  caption:'Hay fotos que valen más que mil "te amo" y esta es una de ellas' },
+    { type:'photo', img:'foto 3.jpeg',  caption:'Me encantas demasiado que seas tan tú' },
+    { type:'photo', img:'foto 4.jpeg',  caption:'Si pudiera guardar un momento en un cuadro, guardaría este' },
+    { type:'photo', img:'foto 5.jpeg',  caption:'Nunca pensé que alguien me fuera a enamorar completamente... y aquí estás jeje' },
+    { type:'photo', img:'foto 6.jpeg',  caption:'Buscando conectar y me terminé enamorando perdidamente.' },
+    { type:'photo', img:'foto 7.jpeg',  caption:'Foto que me encanta de tus ojitos' },
+    { type:'photo', img:'foto 8.jpeg',  caption:'Mi primera y mejor novia, amiga, parcera, pro, de todo' },
+    { type:'photo', img:'foto 9.jpeg',  caption:'Eres la única persona que me vuelve loco' },
+    { type:'photo', img:'foto 10.jpeg', caption:'No me canso. Ni de verte, ni de quererte, ni de nada' },
+
+    { type:'text', title:'Para ti, mi bb', dropCap:true,
+      text:'Voy a ser honesto, te he escrito demasiadas cartas. Pero contigo quiero intentarlo siempre, porque hay cosas que se quedan dando vueltas por dentro y en algún momento hay que sacarlas. Así que devuelta, solamente yo tratando de explicar lo que siento antes de que se me olvide cómo explicártelo.' },
+
+    { type:'text',
+      text:'Lo primero que tengo que admitir es que me encantas, ya es algo obvio no? Quién sabría que yo antes no andaba con el corazón disponible, o eso creía yo. Hasta que en algún momento apareciste tú, siendo completamente tú, sin intentar impresionarme, y algo hizo clic. Fue como un interruptor. Tipo cuando llevas horas buscando algo y de repente lo encuentras en el lugar más obvio del mundo.' },
+
+    { type:'text',
+      text:'Me gusta cómo piensas. Me gusta que no te da miedo decir lo que piensas sin saber qué vas a decir. Me gusta la forma en que te ríes, más cuando hago alguna cagada. Me gustan tus contradicciones, tu forma de enojarte conmigo, tu manera de regañarme jeje. Me gustas tú, básicamente. Con todo y tus cosas "raras", que me encantan.' },
+
+    { type:'text',
+      text:'Hay algo que aprendí desde que estás en mi vida: que yo antes funcionaba en modo automático. Me levantaba, hacía mis cosas, llegaba la noche, repetía. No estaba mal, pero tampoco había mucho que me hiciera querer que el día durara más. Ahora sí lo hay. Ahora hay momentos que quisiera pausar, conversaciones que no quiero que terminen, y una persona específica por la que me alegra que haya amanecido.' },
+
+    { type:'text',
+      text:'Sé que no soy perfecto para esto. Cometo errores, a veces no digo lo que debería y otras veces digo de más. Pero lo que sí tengo claro es que contigo quiero seguir intentándolo. Quiero equivocarme y corregir. Quiero aprender cómo hacerte sentir bien de verdad, al lado mío para seguir creciendo los dos juntos.' },
+
+    { type:'text',
+      text:'También quiero que sepas que no estoy aquí por costumbre ni por comodidad. Estoy aquí porque quiero estar. Porque cuando tengo un día horrible, pienso en contártelo. Porque cuando algo me sale bien, lo primero que se me viene a la cabeza eres tú. Eso pasa porque te volviste la persona más importante que hay en mi día a día.' },
+
+    { type:'text',
+      text:'No sé qué va a pasar adelante, nadie sabe el destino nuestro. Pero sí sé que el futuro me da menos miedo cuando te imagino en él. No porque me resuelvas la vida, sino porque me hace bien tenerte cerca. Porque contigo hasta las cosas complejas se sienten menos pesadas. Y eso vale mucho más de lo que crees.' },
+
+    { type:'text',
+      text:'Así que gracias. Gracias por no pretender ser algo que no eres. Gracias por dejarme estar estos meses que hemos tenido. Gracias por las conversaciones largas, por los mensajes lindos, por reírte de mis cosas randoms aunque te estreses al final JDASJDASJ. Gracias por quedarte cuando podrías perfectamente no hacerlo.' },
+
+    { type:'text', signature:true,
+      text:'Te amo, mi cielito. No de una manera poética ni perfecta, sino de la única manera que sé, eligiéndote cada vez que puedo. Espero que eso sea suficiente, porque es todo lo que tengo y todo eso es tuyo.' }
+];
+
+const particlesEl = document.getElementById('particles');
+for (let i = 0; i < 40; i++) {
+    const p = document.createElement('div');
+    p.className = 'p';
+    const sz = Math.random() * 2 + 1;
+    p.style.cssText = `left:${Math.random()*100}vw;width:${sz}px;height:${sz}px;animation-duration:${Math.random()*18+10}s;animation-delay:${Math.random()*18}s;`;
+    particlesEl.appendChild(p);
+}
+
+const pagesEl = document.getElementById('pages');
+
+pages.forEach((page, i) => {
+    const slide = document.createElement('div');
+    slide.className = 'slide content-slide';
+    slide.dataset.index = i + 1;
+
+    if (page.type === 'photo') {
+        slide.innerHTML = `
+            <div class="card card-photo">
+                <div class="photo-wrap">
+                    <img src="${page.img}" alt="Foto ${i+1}" onerror="this.closest('.photo-wrap').style.minHeight='180px';this.style.display='none'">
+                </div>
+                <p class="photo-caption">"${page.caption}"</p>
+                <span class="pg-num">${i+1} · ${pages.length}</span>
+            </div>
+        `;
+    } else {
+        slide.innerHTML = `
+            <div class="card card-text">
+                ${page.title ? `<h2 class="text-title-el">${page.title}</h2><div class="text-title-line"></div>` : ''}
+                <p${page.dropCap ? ' class="drop-cap"' : ''}>${page.text}</p>
+                ${page.signature ? `<div class="sig-line"></div><p class="signature">Con todo mi amor 🖤</p><p class="final-deco">✦ 🖤 ✦</p>` : ''}
+                <span class="pg-num">${i+1} · ${pages.length}</span>
+            </div>
+        `;
+    }
+    pagesEl.appendChild(slide);
+});
+
+const viewer     = document.getElementById('viewer');
+const arrow      = document.getElementById('arrow-down');
+const progress   = document.getElementById('progress');
+const counter    = document.getElementById('counter');
+const coverSlide = document.getElementById('cover-slide');
+const finalSlide = document.getElementById('final-slide');
+
+const allSlides = [
+    coverSlide,
+    ...Array.from(pagesEl.querySelectorAll('.slide')),
+    finalSlide
+];
+const lastIdx = allSlides.length - 1;
+let current = 0;
+let transitioning = false;
+
+function goTo(idx) {
+    if (transitioning || idx < 0 || idx > lastIdx || idx === current) return;
+    transitioning = true;
+    const prev = allSlides[current];
+    const next = allSlides[idx];
+    prev.classList.remove('active');
+    prev.classList.add('exit-up');
+    next.classList.add('active');
+    current = idx;
+    setTimeout(() => { prev.classList.remove('exit-up'); transitioning = false; }, 580);
+    updateUI();
+}
+
+function next() { goTo(current + 1); }
+function prev() { goTo(current - 1); }
+
+function updateUI() {
+    progress.style.width = (current / lastIdx * 100) + '%';
+    if (current === 0) {
+        arrow.classList.remove('visible', 'up');
+    } else if (current === lastIdx) {
+        arrow.classList.add('visible', 'up');
+    } else {
+        arrow.classList.add('visible');
+        arrow.classList.remove('up');
+    }
+    if (current === 0 || current === lastIdx) {
+        counter.classList.remove('visible');
+    } else {
+        counter.textContent = `${current} / ${lastIdx - 1}`;
+        counter.classList.add('visible');
+    }
+}
+
+document.getElementById('openBtn').addEventListener('click', () => goTo(1));
+document.getElementById('restartBtn').addEventListener('click', () => goTo(0));
+arrow.addEventListener('click', () => { if (current === lastIdx) goTo(0); else next(); });
+
+let ty = 0;
+document.addEventListener('touchstart', e => { ty = e.touches[0].clientY; });
+document.addEventListener('touchend', e => {
+    if (current === 0) return;
+    const diff = ty - e.changedTouches[0].clientY;
+    if (Math.abs(diff) > 45) { diff > 0 ? next() : prev(); }
+});
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        if (current === 0) goTo(1); else next();
+    }
+    if (e.key === 'ArrowUp') { e.preventDefault(); prev(); }
+});
+
+let wheelCooldown = false;
+document.addEventListener('wheel', e => {
+    if (wheelCooldown) return;
+    wheelCooldown = true;
+    setTimeout(() => { wheelCooldown = false; }, 700);
+    if (e.deltaY > 0) { if (current === 0) goTo(1); else next(); }
+    else prev();
+}, { passive: true });
+
+setTimeout(() => {
+    document.getElementById('intro').classList.add('hide');
+    viewer.classList.add('visible');
+}, 2900);
+</script>
+</body>
+</html>
